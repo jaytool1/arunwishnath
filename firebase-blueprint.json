@@ -1,0 +1,223 @@
+{
+  "entities": {
+    "SchoolSettings": {
+      "title": "SchoolSettings",
+      "description": "General settings, contact information, and homepage content for the school",
+      "type": "object",
+      "properties": {
+        "schoolName": { "type": "string", "maxLength": 200 },
+        "schoolNameHi": { "type": "string", "maxLength": 200 },
+        "address": { "type": "string", "maxLength": 300 },
+        "pinCode": { "type": "string", "maxLength": 10, "pattern": "^[0-9]{6}$" },
+        "phone": { "type": "string", "maxLength": 20 },
+        "email": { "type": "string", "maxLength": 100 },
+        "board": { "type": "string", "maxLength": 50 },
+        "medium": { "type": "string", "maxLength": 50 },
+        "classes": { "type": "string", "maxLength": 50 },
+        "principalMessage": { "type": "string", "maxLength": 3000 },
+        "principalMessageHi": { "type": "string", "maxLength": 3000 },
+        "heroTagline": { "type": "string", "maxLength": 200 },
+        "heroTaglineHi": { "type": "string", "maxLength": 200 },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["schoolName", "address", "phone", "email"]
+    },
+    "Notice": {
+      "title": "Notice",
+      "description": "Official school announcements and notices",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 250 },
+        "titleHi": { "type": "string", "maxLength": 250 },
+        "description": { "type": "string", "maxLength": 4000 },
+        "descriptionHi": { "type": "string", "maxLength": 4000 },
+        "category": { "type": "string", "enum": ["academic", "examination", "admission", "holiday", "event", "general"] },
+        "publicationDate": { "type": "string", "format": "date" },
+        "attachmentUrl": { "type": "string", "maxLength": 1000 },
+        "isPublished": { "type": "boolean" },
+        "isTicker": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "createdBy": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["title", "category", "publicationDate", "isPublished"]
+    },
+    "AdmissionApplication": {
+      "title": "AdmissionApplication",
+      "description": "Online admission applications submitted by prospective students for Classes 9 and 10",
+      "type": "object",
+      "properties": {
+        "applicationNumber": { "type": "string", "maxLength": 64, "pattern": "^ABHS-[0-9]{4}-[A-Z0-9]{4,8}$" },
+        "studentName": { "type": "string", "maxLength": 120 },
+        "dateOfBirth": { "type": "string", "format": "date" },
+        "gender": { "type": "string", "enum": ["Male", "Female", "Other"] },
+        "fatherName": { "type": "string", "maxLength": 120 },
+        "motherName": { "type": "string", "maxLength": 120 },
+        "address": { "type": "string", "maxLength": 300 },
+        "mobileNumber": { "type": "string", "maxLength": 15, "pattern": "^[0-9]{10}$" },
+        "previousSchool": { "type": "string", "maxLength": 200 },
+        "classApplyingFor": { "type": "string", "enum": ["9", "10"] },
+        "status": { "type": "string", "enum": ["PENDING", "UNDER_REVIEW", "APPROVED", "REJECTED"] },
+        "adminNotes": { "type": "string", "maxLength": 1000 },
+        "submittedAt": { "type": "string", "format": "date-time" },
+        "reviewedAt": { "type": "string", "format": "date-time" },
+        "reviewedBy": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["applicationNumber", "studentName", "dateOfBirth", "gender", "fatherName", "motherName", "address", "mobileNumber", "classApplyingFor", "status"]
+    },
+    "Staff": {
+      "title": "Staff",
+      "description": "Teaching and administrative staff profiles",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 120 },
+        "designation": { "type": "string", "maxLength": 100 },
+        "designationHi": { "type": "string", "maxLength": 100 },
+        "department": { "type": "string", "maxLength": 100 },
+        "qualification": { "type": "string", "maxLength": 150 },
+        "biography": { "type": "string", "maxLength": 1000 },
+        "photoUrl": { "type": "string", "maxLength": 1000 },
+        "isPublished": { "type": "boolean" },
+        "order": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "designation", "department", "isPublished"]
+    },
+    "ExamSession": {
+      "title": "ExamSession",
+      "description": "Examination academic sessions and terms",
+      "type": "object",
+      "properties": {
+        "sessionName": { "type": "string", "maxLength": 100 },
+        "class": { "type": "string", "enum": ["9", "10"] },
+        "examinationName": { "type": "string", "maxLength": 120 },
+        "year": { "type": "number" },
+        "status": { "type": "string", "enum": ["ACTIVE", "CONCLUDED"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["sessionName", "class", "examinationName", "year", "status"]
+    },
+    "Result": {
+      "title": "Result",
+      "description": "BSEB student examination results and marksheets",
+      "type": "object",
+      "properties": {
+        "sessionId": { "type": "string", "maxLength": 128 },
+        "rollNumber": { "type": "string", "maxLength": 30 },
+        "studentName": { "type": "string", "maxLength": 120 },
+        "dateOfBirth": { "type": "string", "format": "date" },
+        "class": { "type": "string", "enum": ["9", "10"] },
+        "subjects": { "type": "array" },
+        "totalMarks": { "type": "number" },
+        "maximumMarks": { "type": "number" },
+        "percentage": { "type": "number" },
+        "division": { "type": "string", "enum": ["1st Division", "2nd Division", "3rd Division", "Fail"] },
+        "resultStatus": { "type": "string", "enum": ["PASS", "FAIL", "COMPARTMENT"] },
+        "publicationStatus": { "type": "string", "enum": ["DRAFT", "PUBLISHED", "UNPUBLISHED"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["sessionId", "rollNumber", "studentName", "dateOfBirth", "class", "totalMarks", "maximumMarks", "publicationStatus"]
+    },
+    "GalleryImage": {
+      "title": "GalleryImage",
+      "description": "Photographs of campus, infrastructure, sports, and cultural events",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 150 },
+        "titleHi": { "type": "string", "maxLength": 150 },
+        "category": { "type": "string", "enum": ["campus", "classroom", "library", "laboratory", "sports", "events"] },
+        "imageUrl": { "type": "string", "maxLength": 1000 },
+        "caption": { "type": "string", "maxLength": 300 },
+        "isPublished": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "category", "imageUrl", "isPublished"]
+    },
+    "DownloadItem": {
+      "title": "DownloadItem",
+      "description": "Downloadable syllabus, forms, academic calendars, and BSEB model papers",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 200 },
+        "titleHi": { "type": "string", "maxLength": 200 },
+        "category": { "type": "string", "enum": ["syllabus", "admission_form", "academic_calendar", "model_paper", "circular"] },
+        "fileUrl": { "type": "string", "maxLength": 1000 },
+        "fileSize": { "type": "string", "maxLength": 20 },
+        "fileType": { "type": "string", "maxLength": 20 },
+        "isPublished": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "category", "fileUrl", "isPublished"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Chronological audit records of critical administrative modifications",
+      "type": "object",
+      "properties": {
+        "actorUid": { "type": "string", "maxLength": 128 },
+        "actorEmail": { "type": "string", "maxLength": 100 },
+        "action": { "type": "string", "maxLength": 100 },
+        "entityType": { "type": "string", "maxLength": 50 },
+        "entityId": { "type": "string", "maxLength": 128 },
+        "details": { "type": "string", "maxLength": 1000 },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["actorEmail", "action", "entityType", "timestamp"]
+    },
+    "AdminProfile": {
+      "title": "AdminProfile",
+      "description": "Authorized administrative profiles and role mappings",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "maxLength": 100 },
+        "role": { "type": "string", "enum": ["SUPER_ADMIN", "ADMIN", "EDITOR"] },
+        "displayName": { "type": "string", "maxLength": 100 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "role"]
+    }
+  },
+  "firestore": {
+    "/schoolSettings/{settingId}": {
+      "schema": "SchoolSettings",
+      "description": "School general settings and public homepage content"
+    },
+    "/notices/{noticeId}": {
+      "schema": "Notice",
+      "description": "School notice board items"
+    },
+    "/admissionApplications/{applicationId}": {
+      "schema": "AdmissionApplication",
+      "description": "Student online admission applications"
+    },
+    "/staff/{staffId}": {
+      "schema": "Staff",
+      "description": "Teaching and administrative staff list"
+    },
+    "/examSessions/{sessionId}": {
+      "schema": "ExamSession",
+      "description": "Examination sessions"
+    },
+    "/results/{resultId}": {
+      "schema": "Result",
+      "description": "Student exam results and marks"
+    },
+    "/galleryImages/{imageId}": {
+      "schema": "GalleryImage",
+      "description": "School photo gallery assets"
+    },
+    "/downloads/{downloadId}": {
+      "schema": "DownloadItem",
+      "description": "Downloadable academic documents and forms"
+    },
+    "/auditLogs/{logId}": {
+      "schema": "AuditLog",
+      "description": "Immutable administrative audit logs"
+    },
+    "/adminProfiles/{adminId}": {
+      "schema": "AdminProfile",
+      "description": "Administrative role records"
+    }
+  }
+}

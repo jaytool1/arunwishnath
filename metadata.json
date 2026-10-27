@@ -1,0 +1,6 @@
+{
+  "name": "Arun Bishwanath High School",
+  "description": "Official bilingual portal for Arun Bishwanath High School, Aran, Saharsa, Bihar (BSEB). Providing online admissions, student result lookup, notices, and school management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

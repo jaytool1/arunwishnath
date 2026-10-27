@@ -1,0 +1,107 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == "jayydv107@gmail.com" ||
+        exists(/databases/$(database)/documents/adminProfiles/$(request.auth.uid))
+      );
+    }
+
+    // School Settings (General info, Principal message, Homepage hero)
+    match /schoolSettings/{settingId} {
+      allow get: if true;
+      allow list: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Notices (Public can read published notices; Admin has full access)
+    match /notices/{noticeId} {
+      allow get: if resource.data.isPublished == true || isAdmin();
+      allow list: if (resource.data.isPublished == true) || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Admission Applications (Private; Public can create with validation; Admin can view and update)
+    match /admissionApplications/{applicationId} {
+      allow get, list: if isAdmin();
+      allow create: if (
+        incoming().studentName is string && incoming().studentName.size() <= 120 &&
+        incoming().fatherName is string && incoming().fatherName.size() <= 120 &&
+        incoming().motherName is string && incoming().motherName.size() <= 120 &&
+        incoming().mobileNumber is string && incoming().mobileNumber.size() == 10 &&
+        incoming().classApplyingFor in ['9', '10'] &&
+        incoming().status == 'PENDING'
+      ) || isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    // Staff Directory (Public can read published faculty; Admin can manage)
+    match /staff/{staffId} {
+      allow get: if resource.data.isPublished == true || isAdmin();
+      allow list: if (resource.data.isPublished == true) || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Exam Sessions (Public can read active sessions for selection; Admin can manage)
+    match /examSessions/{sessionId} {
+      allow get, list: if resource.data.status == 'ACTIVE' || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Results (Private: direct reads prohibited for public to protect student records. Read via server or admin)
+    match /results/{resultId} {
+      allow get, list, create, update, delete: if isAdmin();
+    }
+
+    // Gallery Images (Public can view published photos)
+    match /galleryImages/{imageId} {
+      allow get: if resource.data.isPublished == true || isAdmin();
+      allow list: if (resource.data.isPublished == true) || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Downloads (Public can view published documents)
+    match /downloads/{downloadId} {
+      allow get: if resource.data.isPublished == true || isAdmin();
+      allow list: if (resource.data.isPublished == true) || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Audit Logs (Immutable, readable only by Admins)
+    match /auditLogs/{logId} {
+      allow get, list: if isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if false;
+    }
+
+    // Admin Profiles
+    match /adminProfiles/{adminId} {
+      allow get, list: if isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+  }
+}
